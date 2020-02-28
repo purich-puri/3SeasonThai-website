@@ -1,0 +1,92 @@
+<script>
+    
+$('document').ready(function() {
+    const URL = "http://ec2-3-14-6-238.us-east-2.compute.amazonaws.com:3000";
+
+        $.ajax({
+            url: URL + "/api/menus/get/menuByType/2",
+            type: "GET",
+            success: function(result) {
+                // console.log(result.data);
+                var temp="";
+                // show product here. You can do the table but I will show only simple way.
+                for (var i = 0; i < result.data.length; i++) {
+
+                    if(result.data[i].isSelectMeatChoice == 1){
+                temp += '<div class="card-deck" style="float:left; width:255px; padding:5px; height:300px;">'
+                    + '<div class="card">'
+                        + '<img class="card-img-top" style="width:150px; margin: 0 auto;"; src="images/' + result.data[i].pictureName + '">'
+                            + '<div class="card-body">'
+                            + '<h5 class="card-title menu_name" style="font-weight:bold;">' + result.data[i].name + '</h5>'
+                            + '<p class="card-text menu_description hidden">' + result.data[i].description + '</p> </div>'
+                                + '<div class="card-footer">'
+                                    + '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#' + result.data[i].id + '" data-action="ADD_TO_MODAL"> Add to Cart </button>'
+                                    + '</div> </div> </div>'
+                    
+                    + '<div class="modal fade" id="' + result.data[i].id + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">'
+                    + '<div class="modal-dialog modal-dialog-centered" role="document">'
+                        + '<div class="modal-content">'
+                        + '<div class="modal-header">'
+                            + '<h5 class="modal-title" style="font-weight:bold; id="exampleModalCenterTitle">' + result.data[i].name +'</h5>'
+                            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+                            + '<span aria-hidden="true">&times;</span> </button>'
+                        +   '</div>'
+                        +   '<div class="modal-header">'  + result.data[i].description + '</div>'
+                        +   '<div class="modal-body">'
+                            +   '<form>'
+                                +   '<input type="radio" name="choice" value="Vegetable and Tofu">  Vegetable and Tofu <span style="float:right;"> $0 </span> <br>'
+                                +   '<input type="radio" name="choice" value="female"> Chicken  <span style="float:right;"> $1 </span>  <br>'
+                                +   '<input type="radio" name="choice" value="other"> Beef  <span style="float:right;"> $1 </span> <br>'
+                                +   '<input type="radio" name="choice" value="male"> Pork  <span style="float:right;"> $1 </span> <br>'
+                                +   '<input type="radio" name="choice" value="female"> Crispy Pork Belly  <span style="float:right;"> $3 </span> <br>'
+                                +   '<input type="radio" name="choice" value="other"> Prawn <span style="float:right;"> $5 </span> <br>'
+                                +   '<input type="radio" name="choice" value="female"> Seafood <span style="float:right;"> $5 </span> <br>'
+                                +   '<input type="radio" name="choice" value="other"> Roasted Duck <span style="float:right;"> $5 </span> <br>'
+                            +   '</form>' 
+                        + '</div>'
+                        + '<div class="modal-body">Price: $' + result.data[i].price + '</div>'
+                        + '<div class="modal-footer">'
+                            + '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
+                            + '<button type="button" class="btn btn-primary" data-action="ADD_TO_CART">Add to cart</button>'
+                        +'</div> </div> </div> </div>';
+                    }
+                    else if(result.data[i].isSelectMeatChoice == 0){
+
+                temp += '<div class="card-deck" style="float:left; width:255px; padding:5px; height:300px;">'
+                    + '<div class="card">'
+                        + '<img class="card-img-top" style="width:150px; margin: 0 auto;"; src="images/' + result.data[i].pictureName + '">'
+                            + '<div class="card-body">'
+                            + '<h5 class="card-title menu_name" style="font-weight:bold;">' + result.data[i].name + '</h5>'
+                            + '<p class="card-text menu_description hidden">' + result.data[i].description + '</p> </div>'
+                                + '<div class="card-footer">'
+                                    + '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#' + result.data[i].id + '" data-action="ADD_TO_MODAL"> Add to Cart </button>'
+                                    + '</div> </div> </div>'
+                    
+                    + '<div class="modal fade" id="' + result.data[i].id + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">'
+                    + '<div class="modal-dialog modal-dialog-centered" role="document">'
+                        + '<div class="modal-content">'
+                        + '<div class="modal-header">'
+                            + '<h5 class="modal-title" style="font-weight:bold; id="exampleModalCenterTitle">' + result.data[i].name +'</h5>'
+                            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+                            + '<span aria-hidden="true">&times;</span> </button>'
+                        + '</div>'
+                        + '<div class="modal-header">' + result.data[i].description + '</div>'
+                        + '<div class="modal-body">Price: $' + result.data[i].price + '</div>'
+                        + '<div class="modal-footer">'
+                            + '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
+                            + '<button type="button" class="btn btn-primary" data-action="ADD_TO_CART">Add to cart</button>'
+                        +'</div> </div> </div> </div>';        
+                    }
+            
+                }
+                // console.log(temp);
+                $('#chef').html(temp);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        })
+    
+});
+
+</script>

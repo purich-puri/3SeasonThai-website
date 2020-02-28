@@ -1,0 +1,82 @@
+<template id="salad-template">
+    <div class="card" style="float:left; width:230px; padding:5px;">
+        <img class="img-fluid card-img" style="width:220px; margin: 0 auto;">
+        <div class="card-body d-flex flex-column justify-content-between" style="min-height:10em;">
+            <h4 class="card-title font-weight-bold"></h4>
+            <h5 class="card-subtitle shop-item-price"></h5>
+        </div>
+        <footer class="card-footer">
+            <form class="form-inline cart-form">
+                <input class="form-control mr-2" type="number" name="quantity" min="1" value="1" style="max-width:80px;">
+                <!-- hidden form fields to store product data -->
+                <input type="hidden" name="name" value="">
+                <input type="hidden" name="description" value="">
+                <input type="hidden" name="productid" value="">
+                <input type="hidden" name="price" value="">
+                <button class="btn btn-primary cart-button" type="submit">Add to Cart</button>
+            </form>
+        </footer>
+    </div>
+    <style>
+        .shop-item-price::before{ content: "$";}
+    </style>
+
+</template>
+
+<script>
+    
+$('document').ready(function() {
+    const URL = "http://ec2-3-14-6-238.us-east-2.compute.amazonaws.com:3000";
+    //get data
+    $.ajax({
+        url: URL + '/api/menus/get/menuByType/5',
+        type: 'GET',
+        dataType: 'json'
+    })
+    .done((result) => {
+        
+        if( result.data ){
+            //select the container in order.twig
+            const container = document.querySelector('#salad-content');
+            //select the template
+            const template = document.querySelector('#salad-template');
+
+            result.data.forEach(( item )=>{
+                let id = item.id;
+                let name = item.name;
+                
+                let imagesrc = "";
+                // check if pictureName not null or not empty
+                if (item.pictureName != null && item.pictureName != "")
+                {
+                    imagesrc = item.pictureName;
+                } else {
+                    imagesrc = "images/logo-image.gif";
+                }
+                
+                let description = item.description;
+                let price = item.price.toFixed(2);
+                let meatchoice = (item.isSelectMeatChoice) ? '' : 'hidden';
+                let isavailable = (item.isAvailable) ? '' : 'disabled';
+
+                //clone template
+                let clone = document.importNode( template.content, true );
+                
+                //fill it with data
+                clone.querySelector('.card-title').innerText = name;
+                clone.querySelector('.card-img').src = imagesrc;
+                clone.querySelector('[name="description"]').value = description;
+                clone.querySelector('.shop-item-price').innerText = price;
+                clone.querySelector('[name="productid"]').value = id;
+                clone.querySelector('[name="name"]').value = name;
+                clone.querySelector('[name="price"]').value = price;
+                //append to container
+                container.appendChild(clone);
+            });
+            // call the function in order.twig to activate the cart forms
+            activateCartForms('#salad-content')
+        }
+    });
+    
+});
+</script>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'partials/head.twig' %}
+    <body>
+        {% include 'partials/navigation.twig' %}
+        <div id="root" class="container">
+        <h3> <img src="images/icons/map_pin.png"> Our Location</h3>
+
+            <div class="mapouter">
+                <div class="gmap_canvas">
+
+                <iframe width="1080" height="400" id="gmap_canvas" src="https://maps.google.com/maps?q=3%20seasons%20thai&t=&z=17&ie=UTF8&iwloc=&output=embed" 
+                frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                </iframe>
+
+                </div>
+                <style>
+                .mapouter{
+                    position:relative;
+                    height:400px;
+                    width:1200px;
+                    margin: 0 auto;
+                }
+                .gmap_canvas{
+                    overflow:hidden;
+                    background:none!important;
+                    height:400px;
+                    width:1200px;
+                    margin: 0 auto;
+                    }
+                </style>
+            </div>
+            <h3> <img src="images/icons/cutleries.png"> About Us </h3>
+            <div class="row">
+                
+                <div class="col-6 text-justify">
+                    When you want to experience authentic Thai dining experience here at New South Wales, 
+                    then you can always come to 3 Seasons Thai Fusion Cuisine. We are located at Darlinghurst rd in Potts Point. 
+                    You have to try our Thai specialties such as the Thai BBQ Chicken, Massaman Curry Beef and Ka Na Moo Grob. 
+                    We gladly recommend our Chef’s Special Pride that includes Crispy Salt & Pepper Squid, Crispy Soft Shell Crab in Mayonnaise Mixed & Honey Soy, Braised Roast 
+                </div>
+
+                <div class="col-6 text-justify">
+                    Duck in Plum Sauce and Creamy Sweet Basil with Prawn. 
+                    If you love curry, you can try our Green Curry, Red Curry, 
+                    Panang Curry and Jungle Herbs Curry. 
+                    You can order online by clicking on the Order Online button and we will deliver your food straight to your front door.
+                </div>
+            </div>
+
+            <h3>  <img src="images/icons/clock.png"> Open hours </h3>
+        </div>
+    </body>
+
+</html>

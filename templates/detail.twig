@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+    {% include 'partials/head.twig' %}
+    <body>
+    {% include 'partials/navigation.twig' %}
+        <main class="container-fluid">
+            <div class="row contain">
+                <div class="col-md-6">
+                    {% for images in detail.images %}
+                        <img clas="img-fluid" src="images/products/{{images.image_file_name}}">
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <h3>{{detail.product.name}}</h3>
+                    <h5>{{detail.product.price}}</h5>
+                    <p>{{detail.product.description}}</p>
+                </div>
+            </div>
+
+        </main>
+    </body>
+</html>

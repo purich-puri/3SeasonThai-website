@@ -1,0 +1,19 @@
+.index-logo{
+    width: 200px;
+}
+
+.btn{
+    background-color: blue;
+    font-weight: bold;
+}
+
+.nav-item{
+    font-size: 20px;
+    color: green;
+    font-weight: bold;
+}
+
+.nav-item:hover{
+    background-color:grey;
+    color: gold;
+}

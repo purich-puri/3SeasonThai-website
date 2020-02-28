@@ -1,0 +1,31 @@
+.toolba {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #d2d6d5;
+}
+.toolba select {
+    margin-bottom: 7px;
+    color: white;
+    font-size: 20px;
+    border: none;
+    background-color: grey;
+}
+.toolba .filte-options {
+    line-height: 40px;
+}
+.toolba a.filte-item {
+    margin-right: 16px;
+    padding-bottom: 18px;
+    font-size: 14px;
+    color: white;
+    border-bottom: 0px solid transparent;
+    transition: all 250ms ease-out;
+}
+.toolba a.filte-item:last-child {
+    margin-right: 0;
+}
+.toolba a.filte-item.active {
+    padding-bottom: 15px;
+    color: #219e9a;
+    font-weight: bold;
+    border-bottom: 3px solid #219e9a;
+}

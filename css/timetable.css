@@ -1,0 +1,19 @@
+.pickup-table,.delivery-table {
+  width: 240px;
+}
+
+.table-row {
+  display: flex;
+  flex-direction: row;
+  margin: 0px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.grayed {
+  background-color: lightgray;
+}
+
+.day {
+  width: 120px;
+}

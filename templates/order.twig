@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="css/toolbar.css">
+        <link rel="stylesheet" href="css/order.css">
+    </head>
+{% include 'partials/head.twig' %}
+    <body>
+    {% include 'partials/navigation.twig' %}
+        <div id="root" class="container">
+            <div class="toolba text-center sticky-top bg-dark">
+                <div class="filte-options justify-content">
+                    <a href="#Appetizer" class="filte-item" data-group="action">Appetizer</a>
+                    <a href="#Chef" class="filte-item" data-group="rpg">Chef Special</a>
+                    <a href="#Salad" class="filte-item" data-group="adventure">Salad</a>
+                    <a href="#Side" class="filte-item" data-group="simulation">Side Dish</a>
+                    <a href="#Soup" class="filte-item" data-group="fighting">Soup</a>
+                    <a href="#Drink" class="filte-item" data-group="shooter">Drink</a>
+                    <a href="#Dessert" class="filte-item" data-group="shooter">Dessert</a>
+                    <a href="#shop-cart" class="filte-item">Go to Cart</a>
+                </div>
+                
+            </div>
+            <div id="allmenu">
+                <div class="row" id="Appetizer" style="padding-top:25px;">
+                    <h3 class="max-width"> Appetizer </h3>
+                    <div id="appetizer-content" class="row">
+                        {% include 'partials/appetizer.twig' %}
+                    </div>
+                </div>
+                
+                <div class="row" id="Chef" style="padding-top:25px;">
+                    <h3 class="max-width"> Chef Special </h3>
+                    <div id="chef-content" class="row">
+                        {% include 'partials/chef.twig' %}
+                    </div>
+                </div>
+
+                <div class="row" id="Salad" style="padding-top:25px;">
+                    <h3 class="max-width"> Salad </h3>
+                    <div id="salad-content" class="row">
+                        {% include 'partials/salad.twig' %}
+                    </div>
+                </div>
+
+                <div class="row" id="Side" style="padding-top:25px;">
+                    <h3 class="max-width"> Side Dish </h3>
+                    <div id="side-content" class="row">
+                        {% include 'partials/sidedish.twig' %}
+                    </div>
+                </div>
+
+                <div class="row" id="Soup" style="padding-top:25px;">
+                    <h3 class="max-width"> Soup </h3>
+                    <div id="soup-content" class="row">
+                        {% include 'partials/soup.twig' %}
+                    </div>
+                </div>
+
+                <div class="row" id="Drink" style="padding-top:25px;">
+                    <h3 class="max-width"> Drink </h3>
+                    <div id="drink-content" class="row">
+                        {% include 'partials/drink.twig' %}
+                    </div>
+                </div>
+
+                <div class="row" id="Dessert" style="padding-top:25px;">
+                    <h3  class="max-width"> Dessert </h3>
+                    <div id="dessert-content" class="row">
+                        {% include 'partials/dessert.twig' %}
+                    </div>
+                </div>
+
+            </div>
+
+            <section id="shop-cart">
+                <h3>Shopping cart</h3>
+                <div class="cart-row row mb-2">
+                    <div class="col-md-6 font-weight-bold">NAME</div>
+                    <div class="col-md-2 font-weight-bold">PRICE</div>
+                    <div class="col-md-3 font-weight-bold">QUANTITY</div>
+                    {# <span class="cart-item cart-header cart-column">NAME</span>
+                    <span class="cart-price cart-header cart-column">PRICE</span>
+                    <span class="cart-quantity cart-header cart-column">QUANTITY</span> #}
+                </div>
+                <div class="cart-items" id="shopping-cart-items">
+                </div>
+                <div class="cart-total">
+                    <strong class="cart-total-title">Total</strong>
+                    <span class="cart-total-price">$0</span>
+                </div>
+                <a href="payment.php">
+                    <button class="btn btn-primary btn-purchase" type="button">
+                    PURCHASE
+                    </button>
+                </a>
+            </section>
+
+            {% include 'partials/modal.twig' %}
+            {% include 'partials/cartitem.twig' %}
+            {% include 'partials/meatselection.twig' %}
+            <script>
+            //array for shopping cart
+                let cartItems = [];
+               
+                // read the cart from local storage               
+                window.addEventListener('load', () => {
+                    loadCart().then((response) => {
+                        console.log(response);
+                        if( response ){
+                            cartItems = response;
+                            renderCartItems( cartItems );
+                        }
+                    })
+                });               
+                // delegate click listener to the shop-cart element for removing items
+                const shopCart = document.querySelector('#shop-cart');
+                shopCart.addEventListener('click', ( event ) => {
+                    if( event.target.tagName == 'BUTTON' ){
+                        let id = event.target.getAttribute('data-id');
+                        cartItems = removeCartItem( id, cartItems );
+                        renderCartItems( cartItems );
+                    }
+                });
+                shopCart.addEventListener('change', (event) => {
+                    let newQty = event.target.value;
+                    let itemId = event.target.getAttribute('data-id');
+                    let item = {id: itemId, quantity: newQty };
+                    updateCartItemQty( item, cartItems );
+                    renderCartItems( cartItems );
+                })
+
+                function activateCartForms( sectionId ){
+                    // add listener to cart forms
+                    let cartBtns = Array.from(document.querySelectorAll( sectionId +' .cart-form'));
+                    cartBtns.forEach((form) => {
+                        form.addEventListener('submit' , ( event ) => {
+                            // stop form from refreshing page
+                            event.preventDefault();
+                            // get the form data
+                            let data = new FormData(event.target);
+                            let itemData = JSON.parse( `{
+                                "name" : "${data.get('name')}",
+                                "description" : "${data.get('description')}",
+                                "price" : "${data.get('price')}",
+                                "quantity" : ${data.get('quantity')},
+                                "id" : ${data.get('productid')},
+                                "meatselection" : ${data.get('meatselection')}
+                                }`
+                            );
+                            // open modal
+                            openModal( itemData );
+                        })
+                    });
+                }
+
+                function openModal( modalData ){
+                    let doc = document.querySelector('body');
+                    let template = document.querySelector('#modal-template');
+                    let node = document.importNode( template.content, true );
+                    //fill with data
+                    node.querySelector('.modal-title').innerText = modalData.name;
+                    node.querySelector('[name="name"]').value = modalData.name;
+                    node.querySelector('.description').innerText = modalData.description;
+                    node.querySelector('[name="quantity"]').value = modalData.quantity;
+                    node.querySelector('[name="price"]').value = modalData.price;
+                    node.querySelector('[name="productid"]').value = modalData.id;
+                    //add meatselection
+                    if(modalData.meatselection){
+                        let mtemplate = document.querySelector('#meat-selection-template');
+                        let mnode = document.importNode( mtemplate.content, true );
+                        node.querySelector('.meat-selection').appendChild(mnode);
+                    }
+                    //add modal to the DOM
+                    doc.appendChild(node);
+                    // add listener for modal's cart button
+                    let modalForm = document.querySelector('#modal-form');
+                    modalForm.addEventListener('submit', addItemToCart );                
+                    //show the modal
+                    $('#cart-modal').modal('show');
+                    $('#cart-modal').on('hidden.bs.modal', (event) => {
+                        //after hiding, remove modal
+                        $(event.target).remove();
+                    });
+                }
+
+                function addItemToCart( event ){
+                    event.preventDefault();
+                    //get the data
+                    let formData = new FormData(event.target);
+                    let itemData = JSON.parse(
+                        `{
+                            "name" : "${formData.get('name')}",
+                            "quantity" : "${formData.get('quantity')}",
+                            "price" : "${formData.get('price')}",
+                            "id" : "${formData.get('productid')}"
+                        }`
+                    );
+                    if( updateCart( itemData, cartItems ) == false ){
+                        cartItems.push( itemData );
+                    }
+                    renderCartItems( cartItems );
+                    //hide the modal
+                    $('#cart-modal').modal('hide');
+                }
+
+                function updateCart( item, itemsArray ){
+                    // find item in the cart
+                    let updated = false;
+                    itemsArray.forEach( ( cartItem, index ) => {
+                        if( cartItem.id == item.id ){
+                            // update the quantity
+                            itemsArray[index].quantity = parseInt(cartItem.quantity) + parseInt(item.quantity);
+                            updated = true;
+                        }
+                    });
+                    return updated;
+                }
+
+                function updateCartItemQty( item, itemsArray ){
+                    let updated = false;
+                    itemsArray.forEach( (cartItem , index ) => {
+                        if( cartItem.id == item.id ){
+                            itemsArray[index].quantity = parseInt( item.quantity );
+                            updated = true;
+                        }
+                    });
+                    return updated;
+                }
+
+                function removeCartItem( id, cartArray ){
+                    let filtered = cartArray.filter( (item) => {
+                        return item.id !== id;
+                    });
+                    return filtered;
+                }
+
+                function renderCartItems( cartArray ){
+                    const container = document.querySelector('#shopping-cart-items');
+                    // empty the cart items 
+                    container.innerHTML = '';
+                    const template = document.querySelector('#cart-item-template');
+                    let total = 0;
+                    cartArray.forEach( (cartItem) => {
+                        let node = document.importNode( template.content, true );
+                        // fill with data
+                        node.querySelector('.name').innerText = cartItem.name;
+                        node.querySelector('[name="quantity"]').value = cartItem.quantity;
+                        node.querySelector('[name="quantity"]').setAttribute('data-id', cartItem.id);
+                        node.querySelector('[name="price"]').value = cartItem.price;
+                        node.querySelector('button').setAttribute('data-id', cartItem.id);
+                        total = total + ( parseFloat(cartItem.quantity) * parseFloat(cartItem.price) );
+                        //add to view
+                        container.appendChild(node);
+                    })
+                    document.querySelector('.cart-total-price').innerText = '$' + total.toFixed(2);
+                    storeCart( cartItems ).then((result) => {
+                        console.log('cart stored');
+                    });
+                }
+
+                function storeCart( cartArray ){
+                    return new Promise( (resolve,reject) => {
+                        window.localStorage.setItem('cart', JSON.stringify(cartArray) );
+                        if( window.localStorage.getItem('cart') ){
+                            resolve(true);
+                        }
+                        else{
+                            reject(false);
+                        }
+                    });
+                }
+
+                function loadCart(){
+                    return new Promise( (resolve,reject) => {
+                        let data = window.localStorage.getItem('cart');
+                        if( data ){
+                            resolve( JSON.parse(data) );
+                        }
+                        else{
+                            reject( false );
+                        }
+                    });
+                }
+                
+            </script>
+        </div>
+    </body>
+
+</html>
